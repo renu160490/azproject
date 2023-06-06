@@ -5,7 +5,7 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
-from azure.storage.blob import *
+from azure.storage.blob import BlobServiceClient
 import string
 import random
 import requests
@@ -24,7 +24,9 @@ key = Config.get('DEFAULT', 'key')
 container = Config.get('DEFAULT', 'container')
 
 
-blob_service = BlockBlobService(account_name=account, account_key=key)
+# blob_service = BlockBlobService(account_name=account, account_key=key)
+
+blob_service_client = BlobServiceClient(account_url=f'https://{account}.blob.core.windows.net/', credential=key)
 
 @app.route("/")
 def main():
@@ -36,10 +38,11 @@ def upload_file():
         filename = secure_filename(file.filename)
         fileextension = filename.rsplit('.', 1)[1]
         try:
-            blob_service.create_blob_from_stream(container, filename, file)
+            # blob_service.create_blob_from_stream(container, filename, file)
+            blob_service_client.create_blob_from_stream(container, filename, file)
 
         except Exception:
-            print('Exception=' + Exception)
+            print('Exception=' + str(Exception))
             pass
         ref = 'http://' + account + '.blob.core.windows.net/' + container + '/' + filename
 
