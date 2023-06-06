@@ -38,7 +38,7 @@ def upload_file():
         filename = secure_filename(file.filename)
         fileextension = filename.rsplit('.', 1)[1]
         try:
-            # blob_service.create_blob_from_stream(container, filename, file)
+            # blob_service.create_blob_from_stream(container, filename, file) 
             blob_service_client.create_blob_from_stream(container, filename, file)
 
         except Exception:
